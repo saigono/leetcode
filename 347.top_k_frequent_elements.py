@@ -2,6 +2,7 @@
 
 from collections import Counter
 from itertools import chain
+from typing import List
 
 class Solution:
     def topKFrequent(self, nums: List[int], k: int) -> List[int]:
