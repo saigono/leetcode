@@ -1,4 +1,5 @@
 # https://leetcode.com/problems/serialize-and-deserialize-binary-tree/
+from collections import deque
 
 # Definition for a binary tree node.
 class TreeNode(object):
@@ -6,6 +7,7 @@ class TreeNode(object):
         self.val = x
         self.left = None
         self.right = None
+
 
 class Codec:
 
@@ -16,11 +18,11 @@ class Codec:
         :rtype: str
         """
         result = []
-        stack = [root]
+        stack = deque([root])
         while stack:
-            new_stack = []
+            new_stack = deque()
             while stack:
-                node = stack.pop(0)
+                node = stack.popleft()
                 if node is None:
                     result.append(None)
                 else:
@@ -31,7 +33,7 @@ class Codec:
                 break
             stack = new_stack
 
-        return str(result)
+        return ','.join(str(x) if x is not None else 'x' for x in result)
 
     def deserialize(self, data):
         """Decodes your encoded data to tree.
@@ -39,8 +41,10 @@ class Codec:
         :type data: str
         :rtype: TreeNode
         """
-        data = eval(data)
-        root_data = data.pop(0)
+        data = deque(int(x) if x != 'x' else None for x in data.split(','))
+        if not data:
+            return None
+        root_data = data.popleft()
         if root_data is None:
             return None
         root = TreeNode(root_data)
@@ -50,8 +54,8 @@ class Codec:
             for parent in parents:
                 if parent is None:
                     continue
-                left = data.pop(0)
-                right = data.pop(0)
+                left = data.popleft()
+                right = data.popleft()
                 if left is not None:
                     left = TreeNode(left)
                 if right is not None:
